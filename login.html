@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeMaster Pro - Sign In</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Windows 11 Style Login - Perfect Fit */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Background Effects */
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .login-wrapper {
+            display: flex;
+            width: 95%;
+            max-width: 1200px;
+            height: 95vh;
+            max-height: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            position: relative;
+        }
+
+        /* Left Side - Pure CSS Stock Market Theme */
+        .login-left {
+            flex: 1;
+            background: 
+                /* Base gradient */
+                linear-gradient(135deg, #667eea 0%, #764ba2 100%),
+                /* Stock chart grid */
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(255,255,255,0.1) 1px, transparent 1px),
+                /* Green upward trend line */
+                linear-gradient(160deg, 
+                    transparent 20%, 
+                    rgba(0, 245, 160, 0.6) 20%,
+                    rgba(0, 245, 160, 0.6) 22%,
+                    transparent 22%,
+                    transparent 35%,
+                    rgba(0, 245, 160, 0.6) 35%,
+                    rgba(0, 245, 160, 0.6) 37%,
+                    transparent 37%,
+                    transparent 55%,
+                    rgba(0, 245, 160, 0.6) 55%,
+                    rgba(0, 245, 160, 0.6) 57%,
+                    transparent 57%,
+                    transparent 80%,
+                    rgba(0, 245, 160, 0.6) 80%,
+                    rgba(0, 245, 160, 0.6) 82%,
+                    transparent 82%
+                );
+            background-size: 
+                cover,
+                50px 50px,
+                50px 50px,
+                cover;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Add animated data points */
+        .login-left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 245, 160, 0.8) 2px, transparent 3px),
+                radial-gradient(circle at 40% 45%, rgba(0, 245, 160, 0.8) 2px, transparent 3px),
+                radial-gradient(circle at 60% 35%, rgba(0, 245, 160, 0.8) 2px, transparent 3px),
+                radial-gradient(circle at 80% 50%, rgba(0, 245, 160, 0.8) 2px, transparent 3px);
+            animation: pulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .brand-section {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 400px;
+            background: rgba(15, 23, 42, 0.7);
+            padding: 40px 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.95);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .brand-section h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00f5a0 0%, #00d9f5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 50px;
+            font-weight: 300;
+            color: #e2e8f0;
+        }
+
+        .features-list {
+            text-align: left;
+            width: 100%;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(8px);
+            border-color: rgba(0, 245, 160, 0.5);
+        }
+
+        .feature-item i {
+            margin-right: 15px;
+            font-size: 1.4rem;
+            width: 25px;
+            opacity: 0.9;
+            color: #00f5a0;
+        }
+
+        /* Right Side - Perfect Centering */
+        .login-right {
+            flex: 1;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+            position: relative;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .login-header h2 {
+            font-size: 2.2rem;
+            color: #1e293b;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .input-with-icon input:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+            transform: translateY(-1px);
+        }
+
+        .input-with-icon.focused i {
+            color: #667eea;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+            padding: 4px;
+        }
+
+        .toggle-password:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 6px;
+        }
+
+        /* Form Options */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-container input {
+            margin-right: 8px;
+            transform: scale(1.1);
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #5a67d8;
+            text-decoration: underline;
+        }
+
+        /* Login Button */
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 24px rgba(102, 126, 234, 0.3),
+                0 0 0 1px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Divider */
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 20px;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .social-btn {
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .social-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Signup Link */
+        .signup-link {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: #5a67d8;
+            text-decoration: underline;
+        }
+
+        /* Demo Credentials */
+        .demo-credentials {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .demo-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .demo-header i {
+            color: #667eea;
+        }
+
+        .demo-info {
+            color: #64748b;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+        }
+
+        .alert-error i {
+            color: #dc2626;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .login-wrapper {
+                width: 98%;
+                height: 98vh;
+            }
+            
+            .login-left, .login-right {
+                padding: 40px 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .login-wrapper {
+                flex-direction: column;
+                height: 100vh;
+                max-height: none;
+                border-radius: 0;
+                width: 100%;
+            }
+            
+            .login-left {
+                display: none;
+            }
+            
+            .login-right {
+                padding: 40px 25px;
+            }
+            
+            .login-card {
+                max-width: 100%;
+            }
+            
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* For very small screens */
+        @media (max-height: 700px) {
+            .login-wrapper {
+                height: 100vh;
+            }
+            
+            .login-left, .login-right {
+                padding: 30px 25px;
+            }
+            
+            .login-header {
+                margin-bottom: 30px;
+            }
+            
+            .form-group {
+                margin-bottom: 20px;
+            }
+            
+            .logo {
+                font-size: 3.5rem;
+                margin-bottom: 20px;
+            }
+            
+            .brand-section h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-wrapper">
+            <!-- Left Side - Branding -->
+            <div class="login-left">
+                <div class="brand-section">
+                    <div class="logo">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h1>StockMarket Pro</h1>
+                    <p class="tagline">AI-Powered Stock Market Intelligence</p>
+                    
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-bolt"></i>
+                            <span>Real-time Market Data</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-robot"></i>
+                            <span>AI Predictions</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure Trading</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Login Form -->
+            <div class="login-right">
+                <div class="login-card">
+                    <div class="login-header">
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to your account</p>
+                    </div>
+                    
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" placeholder="Enter your password" required>
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="remember">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        
+                        <button type="submit" class="login-btn">
+                            <span>Sign In</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </form>
+                    
+                    <div class="divider">
+                        <span>Or continue with</span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <button class="social-btn">
+                            <i class="fab fa-google"></i>
+                            <span>Google</span>
+                        </button>
+                        <button class="social-btn">
+                            <i class="fab fa-apple"></i>
+                            <span>Apple</span>
+                        </button>
+                    </div>
+                    
+                    <div class="signup-link">
+                        Don't have an account? <a href="#">Sign up now</a>
+                    </div>
+                    
+                    <!-- <div class="demo-credentials">
+                        <div class="demo-header">
+                            <i class="fas fa-key"></i>
+                            <span>Demo Access</span>
+                        </div>
+                        <div class="demo-info">
+                            Email: admin<br>
+                            Password: password123
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle password visibility
+            const togglePassword = document.querySelector('.toggle-password');
+            const passwordInput = document.getElementById('password');
+            
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Toggle eye icon
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+            
+            // Form focus effects
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+            });
+            
+            // Form submission
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // Simple validation
+                if (!email || !password) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                // Demo login check
+                if (email === 'admin' && password === 'password123') {
+                    alert('Login successful! Welcome to TradeMaster Pro.');
+                    // In a real app, you would redirect to dashboard
+                } else {
+                    alert('Invalid credentials. Try the demo credentials.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
