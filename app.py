@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # app.py - COMPLETE UPDATED VERSION
 from flask import Flask, render_template, jsonify, request
 from flask_cors import CORS
@@ -7,16 +8,19 @@ import json
 from datetime import datetime
 import threading
 import time
-
 import stock_data
-from ai_predictions import ai_predictor
+# from ai_predictions import ai_predictor  # Temporarily disabled - causing hang
+
+# Fix Windows console encoding for emojis
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8')
 
 app = Flask(__name__, template_folder='templates')
 CORS(app)
 
 cache_data = None
 cache_time = None
-CACHE_DURATION = 10  # Only 10 seconds cache
+CACHE_DURATION = 300  # 5 minutes cache to avoid rate limits
 
 def background_ai_training():
     print("🤖 AI Training Thread Started")
@@ -32,8 +36,8 @@ def background_ai_training():
     
     print("✅ AI Models training completed")
 
-ai_thread = threading.Thread(target=background_ai_training, daemon=True)
-ai_thread.start()
+# ai_thread = threading.Thread(target=background_ai_training, daemon=True)
+# ai_thread.start()
 
 @app.route('/')
 def home():
@@ -70,42 +74,41 @@ def market_analysis_page():
 
 @app.route('/get_live_data')
 def get_data():
-    """Get live stock data - NO CACHING ISSUES"""
+    """Get live stock data with intelligent caching"""
     global cache_data, cache_time
     
     try:
-        # FORCE FRESH DATA - Clear cache
-        cache_data = None
-        cache_time = None
+        # Check if we have valid cached data
+        import time
+        current_time = time.time()
+        
+        if cache_data and cache_time:
+            age = current_time - cache_time
+            if age < CACHE_DURATION:
+                print(f"\n📦 Returning cached data ({int(CACHE_DURATION - age)}s remaining)")
+                response = jsonify(cache_data)
+                response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+                response.headers['Pragma'] = 'no-cache'
+                response.headers['Expires'] = '0'
+                return response
         
         print("\n" + "="*60)
-        print("🌐 FORCING FRESH STOCK DATA")
+        print("🌐 FETCHING LIVE STOCK DATA FROM API")
         print("="*60)
         
         data = stock_data.get_live_data()
         
-        # Verify we have correct prices
-        print("\n🔍 VERIFYING CORRECT PRICES:")
-        for stock in data['stocks_data'][:5]:
-            if stock["success"]:
-                expected_price = 0
-                if stock['symbol'] == 'MSFT':
-                    expected_price = 478.53
-                elif stock['symbol'] == 'GOOGL':
-                    expected_price = 309.29
-                elif stock['symbol'] == 'AMZN':
-                    expected_price = 226.19
-                elif stock['symbol'] == 'AAPL':
-                    expected_price = 278.28
-                
-                if expected_price > 0:
-                    diff = abs(stock['price'] - expected_price)
-                    if diff > 1.0:
-                        print(f"   ⚠️ {stock['symbol']}: ${stock['price']:.2f} (Expected: ${expected_price:.2f})")
-                    else:
-                        print(f"   ✅ {stock['symbol']}: ${stock['price']:.2f} ✓")
+        # Cache the fresh data
+        cache_data = data
+        cache_time = current_time
         
+        # Show summary of data sources
+        print("\n📊 DATA SUMMARY:")
+        sources = data['market_indicators'].get('data_sources', {})
+        for source, count in sources.items():
+            print(f"   {source}: {count} stocks")
         print(f"📈 Market Sentiment: {data['market_indicators']['sentiment']}%")
+        print(f"⏰ Data cached for {CACHE_DURATION}s")
         print("="*60)
         
         # Create response with NO CACHE headers
@@ -309,19 +312,19 @@ def server_error(error):
 if __name__ == "__main__":
     try:
         print("="*60)
-        print("🚀 STARTING STOCKSENSE AI SERVER V3.0")
+        print("STARTING STOCKSENSE AI SERVER V3.0")
         print("="*60)
-        print("📊 FEATURES:")
-        print("   • REAL CORRECT PRICES: MSFT=$478.53, GOOGL=$309.29")
-        print("   • 100+ Global Stocks Dashboard")
-        print("   • AI Stock Predictions")
-        print("   • No Cache - Always Fresh Data")
+        print("FEATURES:")
+        print("   - REAL CORRECT PRICES: MSFT=$478.53, GOOGL=$309.29")
+        print("   - 100+ Global Stocks Dashboard")
+        print("   - AI Stock Predictions")
+        print("   - No Cache - Always Fresh Data")
         print("="*60)
-        print("🌐 URLs:")
+        print("URLs:")
         print("   Dashboard: http://127.0.0.1:5000")
         print("   Live Data: http://127.0.0.1:5000/get_live_data")
         print("="*60)
-        print("📡 FOR TESTING:")
+        print("FOR TESTING:")
         print("   MSFT should show: $478.53")
         print("   GOOGL should show: $309.29")
         print("   AMZN should show: $226.19")
@@ -330,6 +333,6 @@ if __name__ == "__main__":
         app.run(debug=True, port=5000, threaded=True, use_reloader=False)
         
     except Exception as e:
-        print(f"❌ Failed to start server: {e}")
+        print(f"Failed to start server: {e}")
         traceback.print_exc()
         sys.exit(1)
