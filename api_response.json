@@ -1,0 +1,142 @@
+{
+  "AAPL": {
+    "Global Quote": {
+      "01. symbol": "AAPL",
+      "02. open": "277.9000",
+      "03. high": "279.2200",
+      "04. low": "276.8200",
+      "05. price": "278.2800",
+      "06. volume": "39532887",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "278.0300",
+      "09. change": "0.2500",
+      "10. change percent": "0.0899%"
+    }
+  },
+  "MSFT": {
+    "Global Quote": {
+      "01. symbol": "MSFT",
+      "02. open": "479.8200",
+      "03. high": "482.4500",
+      "04. low": "476.3400",
+      "05. price": "478.5300",
+      "06. volume": "21248102",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "483.4700",
+      "09. change": "-4.9400",
+      "10. change percent": "-1.0218%"
+    }
+  },
+  "GOOGL": {
+    "Global Quote": {
+      "01. symbol": "GOOGL",
+      "02. open": "313.7000",
+      "03. high": "314.8700",
+      "04. low": "305.5600",
+      "05. price": "309.2900",
+      "06. volume": "35940170",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "312.4300",
+      "09. change": "-3.1400",
+      "10. change percent": "-1.0050%"
+    }
+  },
+  "AMZN": {
+    "Global Quote": {
+      "01. symbol": "AMZN",
+      "02. open": "229.8700",
+      "03. high": "230.0800",
+      "04. low": "225.1200",
+      "05. price": "226.1900",
+      "06. volume": "35639118",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "230.2800",
+      "09. change": "-4.0900",
+      "10. change percent": "-1.7761%"
+    }
+  },
+  "TSLA": {
+    "Global Quote": {
+      "01. symbol": "TSLA",
+      "02. open": "448.0900",
+      "03. high": "463.0100",
+      "04. low": "441.6700",
+      "05. price": "458.9600",
+      "06. volume": "95656749",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "446.8900",
+      "09. change": "12.0700",
+      "10. change percent": "2.7009%"
+    }
+  },
+  "META": {
+    "Global Quote": {
+      "01. symbol": "META",
+      "02. open": "649.8000",
+      "03. high": "711.0000",
+      "04. low": "638.6100",
+      "05. price": "644.2300",
+      "06. volume": "14016915",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "652.7100",
+      "09. change": "-8.4800",
+      "10. change percent": "-1.2992%"
+    }
+  },
+  "NVDA": {
+    "Global Quote": {
+      "01. symbol": "NVDA",
+      "02. open": "181.1100",
+      "03. high": "182.8200",
+      "04. low": "174.6200",
+      "05. price": "175.0200",
+      "06. volume": "204274918",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "180.9300",
+      "09. change": "-5.9100",
+      "10. change percent": "-3.2665%"
+    }
+  },
+  "JPM": {
+    "Global Quote": {
+      "01. symbol": "JPM",
+      "02. open": "319.6800",
+      "03. high": "320.2700",
+      "04. low": "316.6013",
+      "05. price": "318.5200",
+      "06. volume": "8982911",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "317.3800",
+      "09. change": "1.1400",
+      "10. change percent": "0.3592%"
+    }
+  },
+  "V": {
+    "Global Quote": {
+      "01. symbol": "V",
+      "02. open": "348.0000",
+      "03. high": "349.8400",
+      "04. low": "345.9700",
+      "05. price": "347.8300",
+      "06. volume": "6942265",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "345.6300",
+      "09. change": "2.2000",
+      "10. change percent": "0.6365%"
+    }
+  },
+  "JNJ": {
+    "Global Quote": {
+      "01. symbol": "JNJ",
+      "02. open": "210.2800",
+      "03. high": "212.2700",
+      "04. low": "208.9632",
+      "05. price": "211.5800",
+      "06. volume": "6922683",
+      "07. latest trading day": "2025-12-12",
+      "08. previous close": "210.0100",
+      "09. change": "1.5700",
+      "10. change percent": "0.7476%"
+    }
+  }
+}
