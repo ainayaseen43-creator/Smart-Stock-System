@@ -1,0 +1,18 @@
+{
+  "symbol": "PEP",
+  "feature_names": [
+    "close",
+    "volume",
+    "returns",
+    "volatility",
+    "rsi",
+    "ma_7",
+    "ma_21",
+    "macd"
+  ],
+  "sequence_length": 30,
+  "r_squared": 0.9068218469619751,
+  "mape": 29.160823822021484,
+  "confidence": 90.68218231201172,
+  "trained_date": "2026-01-13T22:43:12.769461"
+}

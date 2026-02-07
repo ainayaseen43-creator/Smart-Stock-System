@@ -1,0 +1,18 @@
+{
+  "symbol": "PYPL",
+  "feature_names": [
+    "close",
+    "volume",
+    "returns",
+    "volatility",
+    "rsi",
+    "ma_7",
+    "ma_21",
+    "macd"
+  ],
+  "sequence_length": 30,
+  "r_squared": 0.9605931043624878,
+  "mape": 106.80079650878906,
+  "confidence": 95.0,
+  "trained_date": "2026-01-16T14:13:11.586181"
+}

@@ -245,13 +245,20 @@ html, body {
     transform: translateY(-50%);
     color: #64748b;
     font-size: 1.1rem;
+    z-index: 1;
 }
+
 .input-with-icon input {
     width: 100%;
     padding: 16px 45px 16px 45px; /* space on both sides */
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+    color: #1e293b;
+    box-sizing: border-box;
 }
-
-
 
 .input-with-icon input:focus {
     border-color: #667eea;
@@ -281,8 +288,11 @@ html, body {
     align-items: center;
     justify-content: center;
     border-radius: 6px;
-    height: auto; /* Add this */
+    height: 30px;
+    width: 30px;
+    z-index: 1;
 }
+
 .toggle-password i {
     color: #64748b;
 }
@@ -378,6 +388,8 @@ html, body {
 .divider span {
     background: white;
     padding: 0 20px;
+    position: relative;
+    z-index: 1;
 }
 
 /* Social Login */
@@ -480,7 +492,7 @@ html, body {
     color: #dc2626;
 }
 
-/* Mobile Responsive */
+/* Mobile Responsive - CORRECTED SYNTAX */
 @media (max-width: 1024px) {
     .login-wrapper {
         width: 98%;
@@ -505,22 +517,22 @@ html, body {
         display: none;
     }
     
-   .login-right {
-    flex: 1;
-    background: white;
-    display: flex;
-    align-items: flex-start; /* center ki jagah flex-start karo */
-    justify-content: center;
-    padding: 50px 40px 40px; /* Top padding zyada, bottom kam */
-    position: relative;
-    overflow-y: auto;
-}
+    .login-right {
+        flex: 1;
+        background: white;
+        display: flex;
+        align-items: flex-start; /* center ki jagah flex-start karo */
+        justify-content: center;
+        padding: 50px 40px 40px; /* Top padding zyada, bottom kam */
+        position: relative;
+        overflow-y: auto;
+    }
 
-.login-card {
-    width: 100%;
-    max-width: 420px;
-    margin: 30px auto 0; /* Top margin de do */
-}
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        margin: 30px auto 0; /* Top margin de do */
+    }
     
     .social-login {
         grid-template-columns: 1fr;

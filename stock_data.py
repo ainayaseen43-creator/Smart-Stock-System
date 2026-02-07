@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# stock_data.py - COMPLETE REAL-TIME VERSION WITH ALPHA VANTAGE
+
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -13,7 +12,7 @@ import json
 
 print("Loading Real-Time Global Stocks Dashboard with Alpha Vantage")
 
-# ========== CONFIGURATION ==========
+
 ALPHA_VANTAGE_API_KEY = "S7ULZPIQ8OSIWQV8"
 
 class StockDataFetcher:
@@ -22,23 +21,22 @@ class StockDataFetcher:
     def __init__(self):
         self.cache = {}
         self.cache_time = {}
-        self.cache_duration = 300  # Cache for 5 minutes to avoid rate limits
+        self.cache_duration = 300  
         self.request_count = 0
         self.last_request_time = time.time()
-        self.request_times = []  # Track request timestamps for rate limiting
-        self.max_requests_per_minute = 5  # Alpha Vantage free tier limit
+        self.request_times = [] 
+        self.max_requests_per_minute = 5  
     
     def _can_make_request(self) -> bool:
         """Check if we can make an API request without exceeding rate limits"""
         current_time = time.time()
-        # Remove requests older than 60 seconds
+
         self.request_times = [t for t in self.request_times if current_time - t < 60]
-        
-        # Check if we're under the limit
+       
         if len(self.request_times) < self.max_requests_per_minute:
             return True
         
-        # If at limit, DON'T WAIT - just return False to use fallback immediately
+     
         oldest_request = min(self.request_times)
         wait_time = 60 - (current_time - oldest_request)
         if wait_time > 0:
@@ -85,7 +83,7 @@ class StockDataFetcher:
                     self.cache_time[cache_key] = current_time
                     return result
         
-        # If we can't make a request or all sources failed, use fallback
+   
         print(f"   💾 {symbol}: Using fallback data (API unavailable)")
         fallback_prices = {
             'AAPL': (278.28, 0.40), 'MSFT': (478.53, -0.54), 'GOOGL': (309.29, 0.25),
@@ -117,7 +115,7 @@ class StockDataFetcher:
             self.cache_time[cache_key] = current_time
             return result
         
-        # Return empty data if no fallback available
+  
         return {
             'price': 0.0,
             'change': 0.0,
@@ -133,7 +131,7 @@ class StockDataFetcher:
         try:
             print(f"   🔍 Attempting Alpha Vantage for {symbol}...")
             
-            # Use GLOBAL_QUOTE for real-time data
+          
             url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={ALPHA_VANTAGE_API_KEY}"
             
             response = requests.get(url, timeout=10)
@@ -152,14 +150,14 @@ class StockDataFetcher:
                 volume_str = quote.get("06. volume", "0")
                 prev_close_str = quote.get("08. previous close", "0")
                 
-                # Convert to appropriate types
+            
                 price = float(price_str) if price_str and price_str != "0" else 0
                 change = float(change_str) if change_str else 0
                 change_percent = float(change_pct_str) if change_pct_str else 0
                 volume = int(float(volume_str)) if volume_str and volume_str != "0" else 0
                 prev_close = float(prev_close_str) if prev_close_str and prev_close_str != "0" else price - change
                 
-                # Validate we have a real price
+         
                 if price > 0:
                     return {
                         'price': price,
@@ -171,7 +169,7 @@ class StockDataFetcher:
                         'source': 'alpha_vantage'
                     }
             
-            # Try alternative endpoint if GLOBAL_QUOTE fails
+     
             return self._fetch_from_alpha_vantage_alternative(symbol)
             
         except Exception as e:
@@ -181,7 +179,7 @@ class StockDataFetcher:
     def _fetch_from_alpha_vantage_alternative(self, symbol: str) -> dict:
         """Alternative Alpha Vantage endpoint if GLOBAL_QUOTE fails"""
         try:
-            # Try TIME_SERIES_INTRADAY for latest price
+           
             url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=5min&apikey={ALPHA_VANTAGE_API_KEY}"
             
             response = requests.get(url, timeout=10)
@@ -215,10 +213,10 @@ class StockDataFetcher:
     def _fetch_from_yfinance(self, symbol: str) -> dict:
         """Fallback to yfinance when Alpha Vantage fails - FAST MODE"""
         try:
-            # Quick single attempt with short timeout
+    
             ticker = yf.Ticker(symbol)
             
-            # Try 5-day history for better reliability (no intraday to avoid delays)
+           
             hist = ticker.history(period="5d", interval="1d")
             
             if not hist.empty and len(hist) >= 2:

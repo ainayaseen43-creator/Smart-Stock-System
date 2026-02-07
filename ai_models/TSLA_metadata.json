@@ -1,0 +1,18 @@
+{
+  "symbol": "TSLA",
+  "feature_names": [
+    "close",
+    "volume",
+    "returns",
+    "volatility",
+    "rsi",
+    "ma_7",
+    "ma_21",
+    "macd"
+  ],
+  "sequence_length": 30,
+  "r_squared": 0.9492777585983276,
+  "mape": 129.09100341796875,
+  "confidence": 94.92777252197266,
+  "trained_date": "2026-01-16T14:32:12.849908"
+}

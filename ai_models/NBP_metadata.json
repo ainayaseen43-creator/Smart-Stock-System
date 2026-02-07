@@ -1,0 +1,18 @@
+{
+  "symbol": "NBP",
+  "feature_names": [
+    "close",
+    "volume",
+    "returns",
+    "volatility",
+    "rsi",
+    "ma_7",
+    "ma_21",
+    "macd"
+  ],
+  "sequence_length": 30,
+  "r_squared": 0.9770477414131165,
+  "mape": 31.587230682373047,
+  "confidence": 95.0,
+  "trained_date": "2026-01-16T14:37:40.964035"
+}

@@ -316,6 +316,26 @@
         }, 5000);
     }
     
+    // Safe number formatting
+    function formatNumber(value, decimals = 2) {
+        if (value === undefined || value === null) return 'N/A';
+        if (typeof value !== 'number') {
+            value = parseFloat(value);
+            if (isNaN(value)) return 'N/A';
+        }
+        return value.toFixed(decimals);
+    }
+    
+    // Safe percentage formatting
+    function formatPercentage(value) {
+        if (value === undefined || value === null) return 'N/A%';
+        if (typeof value !== 'number') {
+            value = parseFloat(value);
+            if (isNaN(value)) return 'N/A%';
+        }
+        return (value >= 0 ? '+' : '') + value.toFixed(1) + '%';
+    }
+    
     // Analyze specific stock
     async function analyzeStock() {
         const symbol = document.getElementById('stock-input').value.trim().toUpperCase();
@@ -331,6 +351,11 @@
             console.log(`🔍 Fetching sentiment for ${symbol}...`);
             const sentimentRes = await fetch(`/api/sentiment/${symbol}`);
             console.log(`Sentiment response status: ${sentimentRes.status}`);
+            
+            if (!sentimentRes.ok) {
+                throw new Error(`HTTP ${sentimentRes.status}: Failed to fetch sentiment`);
+            }
+            
             const sentimentData = await sentimentRes.json();
             console.log('Sentiment data:', sentimentData);
             
@@ -342,6 +367,11 @@
             console.log(`🔮 Fetching predictions for ${symbol}...`);
             const predRes = await fetch(`/api/predict/${symbol}`);
             console.log(`Predictions response status: ${predRes.status}`);
+            
+            if (!predRes.ok) {
+                throw new Error(`HTTP ${predRes.status}: Failed to fetch predictions`);
+            }
+            
             const predData = await predRes.json();
             console.log('Predictions data:', predData);
             
@@ -374,7 +404,7 @@
             console.log(`Top picks response status: ${response.status}`);
             
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+                throw new Error(`HTTP ${response.status}: Failed to fetch top picks`);
             }
             
             const data = await response.json();
@@ -384,7 +414,9 @@
                 throw new Error(data.error || 'Failed to get top picks');
             }
             
-            displayTopPicks(data.top_picks);
+            // Validate and clean top picks data
+            const validatedPicks = validateTopPicksData(data.top_picks || []);
+            displayTopPicks(validatedPicks);
             showMessage('success', 'Top picks loaded successfully');
             
         } catch (error) {
@@ -399,6 +431,24 @@
         }
     }
     
+    // Validate and clean top picks data
+    function validateTopPicksData(picks) {
+        return picks.map(pick => {
+            // Ensure all required fields exist with defaults
+            return {
+                symbol: pick.symbol || 'N/A',
+                name: pick.name || pick.symbol || 'Unknown',
+                sentiment: pick.sentiment || 'HOLD',
+                confidence: typeof pick.confidence === 'number' ? pick.confidence : 65,
+                color: pick.color || '#f59e0b',
+                emoji: pick.emoji || '⚖️',
+                current_price: typeof pick.current_price === 'number' ? pick.current_price : 0,
+                predicted_change: typeof pick.predicted_change === 'number' ? pick.predicted_change : 0,
+                analysis: pick.analysis || 'AI analysis based on market data'
+            };
+        });
+    }
+    
     // Refresh all models
     async function refreshAll() {
         showLoading('Retraining AI models...');
@@ -410,12 +460,20 @@
             let trained = 0;
             
             for (const symbol of stocks) {
-                const response = await fetch(`/api/train_model/${symbol}`);
-                const result = await response.json();
-                
-                if (result.success) {
-                    trained++;
-                    console.log(`✅ Trained ${symbol}: MSE=${result.mse}`);
+                try {
+                    const response = await fetch(`/api/train_model/${symbol}`);
+                    if (!response.ok) {
+                        console.warn(`Failed to train ${symbol}: HTTP ${response.status}`);
+                        continue;
+                    }
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        trained++;
+                        console.log(`✅ Trained ${symbol}: Confidence=${result.confidence || 'N/A'}`);
+                    }
+                } catch (error) {
+                    console.error(`Error training ${symbol}:`, error);
                 }
             }
             
@@ -431,8 +489,18 @@
     
     // Display stock analysis
     function displayStockAnalysis(symbol, sentiment, predictions) {
-        const sentimentClass = `sentiment-${sentiment.sentiment.toLowerCase().replace('_', '-')}`;
-        const changeColor = sentiment.predicted_change >= 0 ? '#16a34a' : '#dc2626';
+        // Ensure all data exists
+        sentiment = sentiment || {};
+        predictions = predictions || {};
+        
+        const sentimentValue = sentiment.sentiment || 'HOLD';
+        const sentimentClass = `sentiment-${sentimentValue.toLowerCase().replace('_', '-')}`;
+        
+        const predictedChange = sentiment.predicted_change || 0;
+        const changeColor = predictedChange >= 0 ? '#16a34a' : '#dc2626';
+        const confidenceValue = sentiment.confidence || 65;
+        const currentPrice = predictions.current_price || 0;
+        const predictionChange = predictions.prediction_change || predictedChange || 0;
         
         const html = `
             <div class="cards-grid">
@@ -440,22 +508,24 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title">AI Sentiment Analysis</div>
-                        <div class="sentiment-badge ${sentimentClass}">${sentiment.sentiment.replace('_', ' ')}</div>
+                        <div class="sentiment-badge ${sentimentClass}">${sentimentValue.replace('_', ' ')}</div>
                     </div>
                     <div style="text-align: center; padding: 20px 0;">
                         <div style="font-size: 48px; margin-bottom: 10px;">${sentiment.emoji || '🤖'}</div>
                         <div style="font-size: 14px; color: #94a3b8;">Confidence Score</div>
-                        <div style="font-size: 36px; font-weight: 700; color: ${sentiment.color || '#f59e0b'};">${sentiment.confidence}%</div>
+                        <div style="font-size: 36px; font-weight: 700; color: ${sentiment.color || '#f59e0b'};">${formatNumber(confidenceValue, 1)}%</div>
                     </div>
                     <div style="margin-top: 20px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <span>Current Price:</span>
-                            <span style="font-weight: 600;">$${predictions.current_price?.toFixed(2) || 'N/A'}</span>
+                            <!-- <span>Current Price:</span> -->
+                          <!-- <div class="pick-price" style="color: ${currentPrice > 0 ? '#ffffff' : '#94a3b8'}">
+                                $${formatNumber(currentPrice)}
+                            </div> -->
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <span>Predicted Change (7 days):</span>
                             <span style="font-weight: 600; color: ${changeColor}">
-                                ${sentiment.predicted_change >= 0 ? '+' : ''}${sentiment.predicted_change}%
+                                ${formatPercentage(predictionChange)}
                             </span>
                         </div>
                     </div>
@@ -482,12 +552,18 @@
                     </div>
                     <div style="margin-top: 20px;">
                         <h4 style="margin-bottom: 15px; color: #94a3b8;">Next 7 Days Forecast</h4>
-                        ${predictions.dates && predictions.dates.length > 0 ? predictions.dates.map((date, idx) => `
-                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                                <span>${date}</span>
-                                <span style="font-weight: 600;">$${predictions.prices[idx]?.toFixed(2) || 'N/A'}</span>
-                            </div>
-                        `).join('') : '<p style="color: #94a3b8; text-align: center;">No prediction data available</p>'}
+                        ${predictions.dates && predictions.dates.length > 0 && predictions.prices && predictions.prices.length > 0 ? 
+                            predictions.dates.slice(0, 7).map((date, idx) => {
+                                const price = predictions.prices[idx] || 0;
+                                return `
+                                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <span>${date}</span>
+                                        <span style="font-weight: 600;">$${formatNumber(price)}</span>
+                                    </div>
+                                `;
+                            }).join('') : 
+                            '<p style="color: #94a3b8; text-align: center;">No prediction data available</p>'
+                        }
                     </div>
                 </div>
             </div>
@@ -496,7 +572,7 @@
         document.getElementById('main-content').innerHTML = html;
         
         // Draw chart if we have data
-        if (predictions.dates && predictions.dates.length > 0) {
+        if (predictions.dates && predictions.dates.length > 0 && predictions.prices && predictions.prices.length > 0) {
             drawPredictionChart(symbol, predictions);
         }
     }
@@ -509,15 +585,22 @@
             currentChart.destroy();
         }
         
-        const isPositive = predictions.prediction_change >= 0;
+        // Ensure we have valid data
+        const validPrices = predictions.prices.filter(price => typeof price === 'number' && !isNaN(price));
+        const validDates = predictions.dates.slice(0, validPrices.length);
+        
+        if (validPrices.length === 0) return;
+        
+        const predictionChange = predictions.prediction_change || 0;
+        const isPositive = predictionChange >= 0;
         
         currentChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: predictions.dates,
+                labels: validDates,
                 datasets: [{
                     label: `${symbol} Price Prediction`,
-                    data: predictions.prices,
+                    data: validPrices,
                     borderColor: isPositive ? '#16a34a' : '#dc2626',
                     backgroundColor: isPositive ? 'rgba(22, 163, 74, 0.1)' : 'rgba(220, 38, 54, 0.1)',
                     borderWidth: 3,
@@ -541,7 +624,7 @@
                         backgroundColor: 'rgba(0, 0, 0, 0.7)',
                         callbacks: {
                             label: function(context) {
-                                return `$${context.raw.toFixed(2)}`;
+                                return `$${formatNumber(context.raw)}`;
                             }
                         }
                     }
@@ -556,7 +639,7 @@
                         ticks: { 
                             color: '#94a3b8',
                             callback: function(value) {
-                                return '$' + value.toFixed(2);
+                                return '$' + formatNumber(value);
                             }
                         }
                     }
@@ -565,7 +648,7 @@
         });
     }
     
-    // Display top picks
+    // Display top picks - FIXED VERSION
     function displayTopPicks(topPicks) {
         let html = `
             <div class="card">
@@ -583,29 +666,40 @@
         `;
         
         topPicks.forEach((pick, index) => {
+            // Ensure all values exist
+            const rank = index + 1;
+            const symbol = pick.symbol || 'N/A';
+            const name = pick.name || symbol;
+            const sentiment = pick.sentiment || 'HOLD';
+            const confidence = typeof pick.confidence === 'number' ? pick.confidence : 65;
+            const currentPrice = typeof pick.current_price === 'number' ? pick.current_price : 0;
+            const predictedChange = typeof pick.predicted_change === 'number' ? pick.predicted_change : 0;
+            
             const rankColors = ['#f59e0b', '#94a3b8', '#ca8a04', '#78716c', '#57534e'];
-            const sentimentClass = `sentiment-${pick.sentiment.toLowerCase().replace('_', '-')}`;
-            const changeColor = pick.predicted_change >= 0 ? '#16a34a' : '#dc2626';
+            const sentimentClass = `sentiment-${sentiment.toLowerCase().replace('_', '-')}`;
+            const changeColor = predictedChange >= 0 ? '#16a34a' : '#dc2626';
+            const pickColor = pick.color || '#f59e0b';
+            const pickEmoji = pick.emoji || '⚖️';
             
             html += `
                 <div class="pick-card">
-                    <div class="pick-rank" style="background: ${rankColors[index]}">${index + 1}</div>
+                    <div class="pick-rank" style="background: ${rankColors[index] || rankColors[4]}">${rank}</div>
                     <div class="pick-info">
-                        <span class="pick-symbol">${pick.symbol}</span>
-                        <span class="pick-name">${pick.name || pick.symbol}</span>
+                        <span class="pick-symbol">${symbol}</span>
+                        <span class="pick-name">${name}</span>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                             <div>
                                 <span class="sentiment-badge ${sentimentClass}" style="font-size: 11px; padding: 4px 8px;">
-                                    ${pick.sentiment.replace('_', ' ')}
+                                    ${sentiment.replace('_', ' ')}
                                 </span>
-                                <span class="pick-confidence" style="margin-left: 8px;">${pick.confidence}% confidence</span>
+                                <span class="pick-confidence" style="margin-left: 8px;">${formatNumber(confidence, 1)}% confidence</span>
                             </div>
-                            <div class="pick-price" style="color: ${changeColor}">
-                                $${pick.current_price?.toFixed(2) || '0.00'}
+                            <div class="pick-price" style="color: ${currentPrice > 0 ? '#ffffff' : '#94a3b8'}">
+                                $${formatNumber(currentPrice)}
                             </div>
                         </div>
                         <div style="margin-top: 8px; font-size: 13px; color: ${changeColor}">
-                            Predicted: ${pick.predicted_change >= 0 ? '+' : ''}${pick.predicted_change}%
+                            Predicted: ${formatPercentage(predictedChange)}
                         </div>
                     </div>
                 </div>
@@ -676,14 +770,59 @@
         document.getElementById('main-content').innerHTML = html;
     }
     
-    // Fallback top picks
+    // Fallback top picks - FIXED with valid data
     function displayFallbackTopPicks() {
         const fallbackPicks = [
-            { symbol: 'AAPL', name: 'Apple Inc.', sentiment: 'BUY', confidence: 78, predicted_change: 2.5, current_price: 276.93 },
-            { symbol: 'MSFT', name: 'Microsoft', sentiment: 'STRONG_BUY', confidence: 85, predicted_change: 3.2, current_price: 420.22 },
-            { symbol: 'GOOGL', name: 'Alphabet Inc.', sentiment: 'HOLD', confidence: 65, predicted_change: -0.5, current_price: 138.36 },
-            { symbol: 'AMZN', name: 'Amazon.com', sentiment: 'BUY', confidence: 72, predicted_change: 1.8, current_price: 176.95 },
-            { symbol: 'TSLA', name: 'Tesla Inc.', sentiment: 'SELL', confidence: 45, predicted_change: -1.2, current_price: 244.55 }
+            { 
+                symbol: 'AAPL', 
+                name: 'Apple Inc.', 
+                sentiment: 'BUY', 
+                confidence: 78.5, 
+                predicted_change: 2.5, 
+                current_price: 192.34,
+                color: '#22c55e',
+                emoji: '📈'
+            },
+            { 
+                symbol: 'MSFT', 
+                name: 'Microsoft Corporation', 
+                sentiment: 'STRONG_BUY', 
+                confidence: 85.3, 
+                predicted_change: 3.2, 
+                current_price: 438.92,
+                color: '#16a34a',
+                emoji: '🚀'
+            },
+            { 
+                symbol: 'GOOGL', 
+                name: 'Alphabet Inc.', 
+                sentiment: 'HOLD', 
+                confidence: 65.7, 
+                predicted_change: -0.5, 
+                current_price: 152.89,
+                color: '#f59e0b',
+                emoji: '⚖️'
+            },
+            { 
+                symbol: 'AMZN', 
+                name: 'Amazon.com Inc.', 
+                sentiment: 'BUY', 
+                confidence: 72.1, 
+                predicted_change: 1.8, 
+                current_price: 176.95,
+                color: '#22c55e',
+                emoji: '📈'
+            },
+            { 
+                symbol: 'TSLA', 
+                name: 'Tesla Inc.', 
+                sentiment: 'SELL', 
+                confidence: 45.5, 
+                predicted_change: -1.2, 
+                current_price: 244.55,
+                color: '#ef4444',
+                emoji: '📉'
+            }
         ];
         
         displayTopPicks(fallbackPicks);

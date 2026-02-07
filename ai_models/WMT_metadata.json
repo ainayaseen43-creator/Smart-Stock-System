@@ -1,0 +1,18 @@
+{
+  "symbol": "WMT",
+  "feature_names": [
+    "close",
+    "volume",
+    "returns",
+    "volatility",
+    "rsi",
+    "ma_7",
+    "ma_21",
+    "macd"
+  ],
+  "sequence_length": 30,
+  "r_squared": 0.8737656474113464,
+  "mape": 9.378518104553223,
+  "confidence": 87.3765640258789,
+  "trained_date": "2026-01-16T14:25:21.934317"
+}

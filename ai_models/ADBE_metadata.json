@@ -1,0 +1,18 @@
+{
+  "symbol": "ADBE",
+  "feature_names": [
+    "close",
+    "volume",
+    "returns",
+    "volatility",
+    "rsi",
+    "ma_7",
+    "ma_21",
+    "macd"
+  ],
+  "sequence_length": 30,
+  "r_squared": 0.8993475437164307,
+  "mape": 30.44488525390625,
+  "confidence": 89.93475341796875,
+  "trained_date": "2026-01-16T14:11:49.376891"
+}

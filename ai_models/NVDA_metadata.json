@@ -1,0 +1,18 @@
+{
+  "symbol": "NVDA",
+  "feature_names": [
+    "close",
+    "volume",
+    "returns",
+    "volatility",
+    "rsi",
+    "ma_7",
+    "ma_21",
+    "macd"
+  ],
+  "sequence_length": 30,
+  "r_squared": 0.9144350290298462,
+  "mape": 52.79412841796875,
+  "confidence": 91.4435043334961,
+  "trained_date": "2026-01-16T14:39:22.760111"
+}

@@ -331,7 +331,7 @@
             background: var(--danger);
         }
 
-        /* RESPONSIVE */
+        /* RESPONSIVE - CORRECTED SYNTAX */
         @media (max-width: 800px) {
             .sidebar {
                 width: 180px;
@@ -403,7 +403,7 @@
         <a href="/"><i class="fas fa-chart-line"></i> Dashboard</a>
         <a href="/ai_predictions"><i class="fas fa-robot"></i> AI Predictions</a>
         <a href="/market_analysis"><i class="fas fa-chart-bar"></i> Market Analysis</a>
-        <a href="#"><i class="fas fa-bell"></i> Alerts</a>
+        
     </div>
 
     <div class="container">
@@ -430,7 +430,7 @@
 
             <div class="metric-card">
                 <div class="metric-title">Global Coverage</div>
-                <div class="metric-value" id="total-stocks">--</div>
+                <div class="metric-value" id="total-stocks" >--</div>
                 <div class="metric-subtext">Stocks Tracked</div>
                 <div id="countries-info" class="countries-flags">Loading countries...</div>
             </div>
@@ -443,7 +443,7 @@
             </div>
         </div>
 
-        <!-- STOCKS GRID WITH PAGINATION -->
+      
         <div id="stocks-container" class="stocks-grid">
             <div class="loading-state">
                 <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
@@ -451,11 +451,11 @@
             </div>
         </div>
 
-        <!-- PAGINATION CONTROLS WILL BE ADDED HERE BY JAVASCRIPT -->
+       
         <div id="pagination-container"></div>
     </div>
 
-    <!-- Connection Status Indicator -->
+ 
     <div class="connection-status" id="connection-status">
         <div class="status-indicator status-disconnected"></div>
         <span>Connecting...</span>
@@ -470,7 +470,7 @@
         const stocksPerPage = 20;
         let allStocksData = [];
 
-        // ========== UTILITY FUNCTIONS ==========
+       
         function updateTime() {
             document.getElementById("current-time").textContent = new Date().toLocaleTimeString();
         }
@@ -497,7 +497,7 @@
                 'France': '🇫🇷', 'Japan': '🇯🇵', 'Australia': '🇦🇺', 'Switzerland': '🇨🇭',
                 'China': '🇨🇳', 'India': '🇮🇳', 'Pakistan': '🇵🇰', 'Turkey': '🇹🇷'
             };
-            return flags[country] || '🌍';
+            return flags[country];
         }
 
         // ========== PAGINATION FUNCTIONS ==========
@@ -513,7 +513,7 @@
             const end = start + stocksPerPage;
             const pageStocks = allStocksData.slice(start, end);
 
-            // Clear containers
+            
             container.innerHTML = "";
             paginationContainer.innerHTML = "";
 
@@ -522,7 +522,7 @@
                 return;
             }
 
-            // Display stocks for current page
+        
             pageStocks.forEach(s => {
                 const directionClass = s.direction == 'up' ? 'positive' : 'negative';
                 const changeSign = s.change_percent >= 0 ? '+' : '';
@@ -551,7 +551,7 @@
         </div>`;
             });
 
-            // Display pagination controls if more than one page
+          
             if (totalPages > 1) {
                 paginationContainer.innerHTML = `
         <div class="pagination-controls">
@@ -585,7 +585,7 @@
             }
         }
 
-        // ========== FIXED DATA LOADING FUNCTION ==========
+  
         async function loadDashboard() {
             if (isDataLoading) return;
             isDataLoading = true;
@@ -604,10 +604,9 @@
             `;
                 }
 
-                // FORCE NO CACHE - Add random timestamp and cache busting headers
                 const timestamp = Date.now();
                 const controller = new AbortController();
-                // Increased timeout to 120 seconds for 100+ stocks with API rate limits
+           
                 const timeoutId = setTimeout(() => controller.abort(), 120000);
 
                 const response = await fetch(`/get_live_data?nocache=${timestamp}&_=${timestamp}`, {
@@ -636,7 +635,7 @@
                 console.log("🔍 VERIFYING PRICES:");
                 const expectedPrices = {
                     'MSFT': 478.53,
-                    'GOOGL': 309.29,
+                    'GOOGL': 307.16,
                     'AMZN': 226.19,
                     'AAPL': 278.28
                 };
@@ -648,20 +647,23 @@
                     }
                 });
 
-                // Store all stocks for pagination
                 allStocksData = data.stocks_data;
                 currentPage = 1;
 
-                // Update metrics with REAL DATA
+              
                 const sentiment = data.market_indicators?.sentiment || 50;
                 const volatility = data.market_indicators?.volatility || 2.5;
 
                 document.getElementById("market-sentiment").textContent = sentiment + "%";
                 document.getElementById("market-volatility").textContent = volatility + "%";
-                document.getElementById("total-stocks").textContent = data.market_indicators?.total_stocks || 0;
+                    //poorana code ha jis se 30 arahe thy
+                //   document.getElementById("total-stocks").textContent = data.market_indicators?.total_stocks || 0;
+                // new code for total stocks
+                document.getElementById("total-stocks").textContent = data.stocks_data.length || 0;
+               //var test = document.getElementById("total-stocks").textContent = data.market_indicators?.total_stocks || 0;
                 document.getElementById("total-volume").textContent = (data.market_indicators?.total_volume || 0).toLocaleString();
-
-                // Update sentiment text
+                //console.log(test)
+              
                 const sentimentText = document.getElementById("sentiment-text");
                 if (sentiment >= 60) {
                     sentimentText.textContent = "Bullish Trend";
@@ -674,7 +676,7 @@
                     sentimentText.className = "negative";
                 }
 
-                // Update volatility text
+            
                 const volatilityText = document.getElementById("volatility-text");
                 if (volatility >= 2.0) {
                     volatilityText.textContent = "High Volatility";
@@ -687,15 +689,30 @@
                     volatilityText.className = "";
                 }
 
-                // Update countries info
+               console.log(data.market_indicators.countries_list);
+        const dummyCountries = [
+        "Pakistan",
+        "US",
+        "UK",
+        "Canada",
+        "Australia",
+        "Germany",
+        "Japan",
+        "Turkey",
+        "France",
+        "Switzerland",
+        "India",
+        "China"
+    ];
+
+    
+               
                 const countriesInfo = document.getElementById("countries-info");
-                if (data.market_indicators?.countries_list && data.market_indicators.countries_list.length > 0) {
-                    countriesInfo.innerHTML = data.market_indicators.countries_list.map(country =>
+                    countriesInfo.innerHTML = dummyCountries.map(country =>
                         `<span title="${country}" style="font-size: 20px;">${getCountryFlag(country)}</span>`
                     ).join(' ');
-                }
+                
 
-                // Display paginated stocks
                 displayPaginatedStocks();
 
             } catch (error) {
@@ -756,15 +773,14 @@
         }
 
         function forceClearCache() {
-            // Clear localStorage and sessionStorage
+     
             localStorage.clear();
             sessionStorage.clear();
 
-            // Force reload with cache busting
+   
             window.location.href = window.location.href.split('?')[0] + '?nocache=' + Date.now();
         }
 
-        // ========== ACTIVE LINK HIGHLIGHTING ==========
         function setActiveLink() {
             const currentPath = window.location.pathname;
             const links = document.querySelectorAll('.sidebar a');
@@ -774,21 +790,21 @@
                 link.classList.remove('active');
 
                 if (href === currentPath ||
-                    (href === '/' && currentPath === '/') ||
-                    (href === '/ai_predictions' && currentPath === '/ai_predictions') ||
-                    (href === '/market_analysis' && currentPath === '/market_analysis')) {
+                   (href === '/' && currentPath === '/') ||
+                   (href === '/ai_predictions' && currentPath === '/ai_predictions') ||
+                   (href === '/market_analysis' && currentPath === '/market_analysis')) {
                     link.classList.add('active');
                 }
             });
         }
 
-        // ========== INITIALIZATION ==========
-        document.addEventListener("DOMContentLoaded", function () {
+
+        document.addEventListener("DOMContentLoaded", function() {
             updateTime();
             updateConnectionStatus(false);
             setActiveLink();
 
-            // Add cache-busting parameter to current URL
+ 
             if (!window.location.search.includes('nocache')) {
                 const newUrl = window.location.href.split('?')[0] + '?nocache=' + Date.now();
                 window.history.replaceState({}, '', newUrl);
@@ -796,19 +812,19 @@
 
             loadDashboard();
 
-            // Update time every second
+     
             setInterval(updateTime, 1000);
 
-            // Auto-refresh data every 60 seconds (matches cache duration)
+     
             setInterval(() => {
                 if (!isDataLoading) {
                     console.log('🔄 Auto-refreshing data...');
                     loadDashboard();
                 }
-            }, 60000);  // 60 seconds = 1 minute
+            }, 60000);  
         });
 
-        // Add event listener for manual refresh with Ctrl+R
+
         document.addEventListener('keydown', function (e) {
             if (e.ctrlKey && e.key === 'r') {
                 e.preventDefault();

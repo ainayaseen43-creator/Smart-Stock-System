@@ -359,7 +359,7 @@ body {
 .medium { color: var(--warning-color); font-weight: bold; }
 .low { color: var(--success-color); font-weight: bold; }
 
-/* Responsive Design */
+/* Responsive Design - CORRECTED SYNTAX */
 @media (max-width: 768px) {
     .dashboard-grid {
         grid-template-columns: 1fr;

@@ -1,0 +1,18 @@
+{
+  "symbol": "JPM",
+  "feature_names": [
+    "close",
+    "volume",
+    "returns",
+    "volatility",
+    "rsi",
+    "ma_7",
+    "ma_21",
+    "macd"
+  ],
+  "sequence_length": 30,
+  "r_squared": 0.8548725247383118,
+  "mape": 18.957622528076172,
+  "confidence": 85.48725128173828,
+  "trained_date": "2026-01-16T14:42:08.683229"
+}
